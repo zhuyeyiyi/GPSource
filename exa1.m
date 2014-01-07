@@ -12,6 +12,7 @@ function cnt = exa1()
 	count5 = 0;
 	count6 = 0;
 	count7 = 0;
+	count8 = 0;
 	
 	param0 = [0 0]';
 	param1 = [0 0]';
@@ -21,8 +22,10 @@ function cnt = exa1()
 	param5 = [0 0]';
 	param6 = [0 0]';
 	param7 = [0 0]';
+	param8 = [0 0]';
 	
-	step = 1;
+	
+	step = 0.5;
 	rate = 0.24;	%solution range:*alpha-beta<gamma
 	gamma = 0.8;	%Intercept
 
@@ -33,121 +36,121 @@ function cnt = exa1()
 	
 	target = 0;
 	
-	for beta = -30:step:10			% for beta = -0.6:0.05:0.2
-		for alpha =  -70:step:20		% for alpha =  -2:0.05:1
-
-		
-			if(rate*alpha-beta>gamma)
-				continue;
-			end
-			
-			A1=[-2 alpha;19 beta];
-			A2=[-4 alpha;-1 beta];
-			
-			setlmis([]);
-			
-			V1=lmivar(3,[1 2;3 4]);			% V1=[X1 X2;X2 X3]
-			V2=lmivar(3,[5 2;3 4]);			% V2=[X4 X2;X2 X3]
-			 W=lmivar(1,[2 1]);				% W
-
-			lmiterm([-1 1 1 V1],1/2,1,'s');	% 0<V1:V1
-		
-			lmiterm([-2 1 1 V2],1/2,1,'s');	% 0<V2:V2 
-			
-			lmiterm([-3 1 1  W],1,1);		% 0<W:W
-
-			lmiterm([4 1 1 -V1],1,A1,'s');	% V1*A1+A1'*V1'+W<0:V1*A1+A1*V1'
-			lmiterm([4 1 1   W],1,1);		% V1*A1+A1*V1'+W<0:W
-
-			lmiterm([5 1 1 -V2],1,A2,'s');	% V2*A2+A2'*V2'+W<0:V2*A2+A2*V2'
-			lmiterm([5 1 1   W],1,1);		% V2*A2+A2*V2'+W<0:W
-
-			lmiterm([6 1 1 -V1],1,A2,'s');	% V1*A2+A2'*V1'-W<0:V1*A2+A2'*V2'
-			lmiterm([6 1 1   W],-1,1);		% V1*A2+A2'*V1'-W<0:-W
-
-			lmiterm([7 1 1 -V2],1,A1,'s');	% V2*A1+A1'*V2'-W<0:V2*A1+A1'*V2'
-			lmiterm([7 1 1   W],-1,1);		% V2*A1+A1'*V2'-W<0:-W
-			
-			lmisys=getlmis;
-			[tmin,xfeas]=feasp(lmisys,options,target);
-
-
-			if tmin<0
-				param0 = [param0 [alpha beta]'];
-				count0 = count0 + 1;
-			end
-			
-		end
-	end
-	[m n] = size(param0);
-	param0 = param0(:,2:n);
-	timestr = datestr(now,30);
-	fid = fopen([timestr,'_param0.txt'],'w');		
-	fprintf(fid,'%6.2f\t %6.2f\n',param0);
-	fclose(fid);
-	plot(param0(1,:),param0(2,:),'.','markersize',5);
-	hold on;
-
-	
-	
-	
-		
-	% for beta = -30:step:10				% for beta = -0.6:0.05:0.2
+	% for beta = -30:step:10			% for beta = -0.6:0.05:0.2
 		% for alpha =  -70:step:20		% for alpha =  -2:0.05:1
+
 		
-		% if(rate*alpha-beta>gamma)
-			% continue;
-		% end
+			% if(rate*alpha-beta>gamma)
+				% continue;
+			% end
+			
+			% A1=[-2 alpha;19 beta];
+			% A2=[-4 alpha;-1 beta];
+			
+			% setlmis([]);
+			
+			% V1=lmivar(3,[1 2;3 4]);			% V1=[X1 X2;X2 X3]
+			% V2=lmivar(3,[5 2;3 4]);			% V2=[X4 X2;X2 X3]
+			 % W=lmivar(1,[2 1]);				% W
+
+			% lmiterm([-1 1 1 V1],1/2,1,'s');	% 0<V1:V1
 		
-		% A1=[-2 alpha;19 beta];
-		% A2=[-4 alpha;-1 beta];
-		
-		% setlmis([]);
-		
-		% V1=lmivar(3,[1 2;3 4]);			% V1=[X1 X2;X2 X3]
-		% V2=lmivar(3,[5 2;3 4]);			% V2=[X4 X2;X2 X3]
-		
-		% lamda12 = lmivar(3,[6 7;8 9]);
-		% lamda21 = lmivar(3,[10 11;12 13]);
+			% lmiterm([-2 1 1 V2],1/2,1,'s');	% 0<V2:V2 
+			
+			% lmiterm([-3 1 1  W],1,1);		% 0<W:W
+
+			% lmiterm([4 1 1 -V1],1,A1,'s');	% V1*A1+A1'*V1'+W<0:V1*A1+A1*V1'
+			% lmiterm([4 1 1   W],1,1);		% V1*A1+A1*V1'+W<0:W
+
+			% lmiterm([5 1 1 -V2],1,A2,'s');	% V2*A2+A2'*V2'+W<0:V2*A2+A2*V2'
+			% lmiterm([5 1 1   W],1,1);		% V2*A2+A2*V2'+W<0:W
+
+			% lmiterm([6 1 1 -V1],1,A2,'s');	% V1*A2+A2'*V1'-W<0:V1*A2+A2'*V2'
+			% lmiterm([6 1 1   W],-1,1);		% V1*A2+A2'*V1'-W<0:-W
+
+			% lmiterm([7 1 1 -V2],1,A1,'s');	% V2*A1+A1'*V2'-W<0:V2*A1+A1'*V2'
+			% lmiterm([7 1 1   W],-1,1);		% V2*A1+A1'*V2'-W<0:-W
+			
+			% lmisys=getlmis;
+			% [tmin,xfeas]=feasp(lmisys,options,target);
 
 
-		% lmiterm([-1 1 1 V1],1/2,1,'s');		% 0<V1:V1
-	
-		% lmiterm([-2 1 1 V2],1/2,1,'s');		% 0<V2:V2 
-
-		% lmiterm([ 3 1 1 V1],A2',1,'s');
-		% lmiterm([-3 1 1 lamda12],1/2,1,'s');
-
-		% lmiterm([ 4 1 1 V2],A1',1,'s');
-		% lmiterm([-4 1 1 lamda21],1/2,1,'s');
-		
-		% lmiterm([5 1 1 V1],A1',1,'s');
-		% lmiterm([5 1 2  lamda12],1/2,1);
-		% lmiterm([5 1 2 -lamda21],1/2,1);
-		% lmiterm([5 2 1 -lamda12],1/2,1);
-		% lmiterm([5 2 1  lamda21],1/2,1);
-		% lmiterm([5 2 2 V2],A2',1,'s');
-		
-		% lmisys=getlmis;
-		% [tmin,xfeas]=feasp(lmisys,options,target);
-		
-		% if tmin<0
-			% param1 = [param1 [alpha beta]'];
-			% count1 = count1 + 1;
-			% hold on;
-		% end
-
+			% if tmin<0
+				% param0 = [param0 [alpha beta]'];
+				% count0 = count0 + 1;
+			% end
+			
 		% end
 	% end
-
-	% [m n] = size(param1);
-	% param1 = param1(:,2:n);
+	% [m n] = size(param0);
+	% param0 = param0(:,2:n);
 	% timestr = datestr(now,30);
-	% fid = fopen([timestr,'_param1.txt'],'w');		
-	% fprintf(fid,'%6.2f\t %6.2f\n',param1);
+	% fid = fopen([timestr,'_param0.txt'],'w');		
+	% fprintf(fid,'%6.2f\t %6.2f\n',param0);
 	% fclose(fid);
-	% plot(param1(1,:),param1(2,:),'o','markersize',10);
+	% plot(param0(1,:),param0(2,:),'.','markersize',5);
 	% hold on;
+
+	
+	
+	
+		
+	for beta = -30:step:10				% for beta = -0.6:0.05:0.2
+		for alpha =  -70:step:20		% for alpha =  -2:0.05:1
+		
+		if(rate*alpha-beta>gamma)
+			continue;
+		end
+		
+		A1=[-2 alpha;19 beta];
+		A2=[-4 alpha;-1 beta];
+		
+		setlmis([]);
+		
+		V1=lmivar(3,[1 2;3 4]);			% V1=[X1 X2;X2 X3]
+		V2=lmivar(3,[5 2;3 4]);			% V2=[X4 X2;X2 X3]
+		
+		lamda12 = lmivar(3,[6 7;8 9]);
+		lamda21 = lmivar(3,[10 11;12 13]);
+
+
+		lmiterm([-1 1 1 V1],1/2,1,'s');		% 0<V1:V1
+	
+		lmiterm([-2 1 1 V2],1/2,1,'s');		% 0<V2:V2 
+
+		lmiterm([ 3 1 1 V1],A2',1,'s');
+		lmiterm([-3 1 1 lamda12],1/2,1,'s');
+
+		lmiterm([ 4 1 1 V2],A1',1,'s');
+		lmiterm([-4 1 1 lamda21],1/2,1,'s');
+		
+		lmiterm([5 1 1 V1],A1',1,'s');
+		lmiterm([5 1 2  lamda12],1/2,1);
+		lmiterm([5 1 2 -lamda21],1/2,1);
+		lmiterm([5 2 1 -lamda12],1/2,1);
+		lmiterm([5 2 1  lamda21],1/2,1);
+		lmiterm([5 2 2 V2],A2',1,'s');
+		
+		lmisys=getlmis;
+		[tmin,xfeas]=feasp(lmisys,options,target);
+		
+		if tmin<0
+			param1 = [param1 [alpha beta]'];
+			count1 = count1 + 1;
+			hold on;
+		end
+
+		end
+	end
+
+	[m n] = size(param1);
+	param1 = param1(:,2:n);
+	timestr = datestr(now,30);
+	fid = fopen([timestr,'_param1.txt'],'w');		
+	fprintf(fid,'%6.2f\t %6.2f\n',param1);
+	fclose(fid);
+	plot(param1(1,:),param1(2,:),'o','markersize',10);
+	hold on;
 	
 	
 
@@ -409,126 +412,126 @@ function cnt = exa1()
 
 
 
-	for beta = -30:step:10				% for beta = -0.6:0.05:0.2
-		for alpha =  -70:step:20		% for alpha =  -2:0.05:1
+	% for beta = -30:step:10				% for beta = -0.6:0.05:0.2
+		% for alpha =  -70:step:20		% for alpha =  -2:0.05:1
 
-		if(rate*alpha-beta>gamma)
-			continue;
-		end
+		% if(rate*alpha-beta>gamma)
+			% continue;
+		% end
 		
-		A1=[-2 alpha;19 beta];
-		A2=[-4 alpha;-1 beta];
+		% A1=[-2 alpha;19 beta];
+		% A2=[-4 alpha;-1 beta];
 		
-		setlmis([]);
+		% setlmis([]);
 		
-		V1=lmivar(3,[1 2;3 4]);			% V1=[X1 X2;X2 X3]
-		V2=lmivar(3,[5 2;3 4]);			% V2=[X4 X2;X2 X3]
-		E1=lmivar(3,5+[1 2;2 4]);		% E1=lmivar(3,5+[1 2;3 4]);
-		E2=lmivar(3,9+[1 2;3 4]);
+		% V1=lmivar(3,[1 2;3 4]);			% V1=[X1 X2;X2 X3]
+		% V2=lmivar(3,[5 2;3 4]);			% V2=[X4 X2;X2 X3]
+		% E1=lmivar(3,5+[1 2;2 4]);		% E1=lmivar(3,5+[1 2;3 4]);
+		% E2=lmivar(3,9+[1 2;3 4]);
 		
-		lamda12 = lmivar(3,13+[1 2 3 4;5 6 7 8;9 10 11 12;13 14 15 16]);
-		lamda21 = lmivar(3,29+[1 2 3 4;5 6 7 8;9 10 11 12;13 14 15 16]);
+		% lamda12 = lmivar(3,13+[1 2 3 4;5 6 7 8;9 10 11 12;13 14 15 16]);
+		% lamda21 = lmivar(3,29+[1 2 3 4;5 6 7 8;9 10 11 12;13 14 15 16]);
 
-		lamda12_11 = lmivar(3,13+[1 2;5 6]); 
-		lamda12_12 = lmivar(3,13+[3 4;7 8]);
-		lamda12_21 = lmivar(3,13+[9 10;13 14]);
-		lamda12_22 = lmivar(3,13+[11 12;15 16]);
+		% lamda12_11 = lmivar(3,13+[1 2;5 6]); 
+		% lamda12_12 = lmivar(3,13+[3 4;7 8]);
+		% lamda12_21 = lmivar(3,13+[9 10;13 14]);
+		% lamda12_22 = lmivar(3,13+[11 12;15 16]);
 
-		lamda21_11 = lmivar(3,29+[1 2;5 6]); 
-		lamda21_12 = lmivar(3,29+[3 4;7 8]);
-		lamda21_21 = lmivar(3,29+[9 10;13 14]);
-		lamda21_22 = lmivar(3,29+[11 12;15 16]);
+		% lamda21_11 = lmivar(3,29+[1 2;5 6]); 
+		% lamda21_12 = lmivar(3,29+[3 4;7 8]);
+		% lamda21_21 = lmivar(3,29+[9 10;13 14]);
+		% lamda21_22 = lmivar(3,29+[11 12;15 16]);
 
 		
-		lmiterm([-1 1 1 V1],1/2,1,'s');		% 0<V1:V1
+		% lmiterm([-1 1 1 V1],1/2,1,'s');		% 0<V1:V1
 	
-		lmiterm([-2 1 1 V2],1/2,1,'s');		% 0<V2:V2 
+		% lmiterm([-2 1 1 V2],1/2,1,'s');		% 0<V2:V2 
 		
-		lmiterm([ 3 1 1 E1],1,1);			% E1<0
+		% lmiterm([ 3 1 1 E1],1,1);			% E1<0
 
-		lmiterm([ 4 1 1  V1],A2',4,'s');
-		lmiterm([ 4 1 1  E1],A1',-A2,'s');
-		lmiterm([ 4 1 1  E2],A1',-2,'s');
-		lmiterm([ 4 1 2 -E2],1,1);
-		lmiterm([ 4 2 1  E2],1,1);
-		lmiterm([ 4 2 2  E1],1,1/2);	
-		lmiterm([-4 1 1  lamda12_11],1/2,1,'s');
-		lmiterm([-4 1 2  lamda12_12],1/2,1);
-		lmiterm([-4 1 2 -lamda12_21],1/2,1);
-		lmiterm([-4 2 1  lamda12_21],1/2,1);
-		lmiterm([-4 2 1 -lamda12_12],1/2,1);
-		lmiterm([-4 2 2  lamda12_22],1/2,1,'s');
-
-
-		lmiterm([ 5 1 1  V2],A1',4,'s');
-		lmiterm([ 5 1 1  E1],A2',-A1,'s');
-		lmiterm([ 5 1 1  E2],A2',-2,'s');
-		lmiterm([ 5 1 2 -E2],1,1);
-		lmiterm([ 5 2 1  E2],1,1);
-		lmiterm([ 5 2 2  E1],1,1/2);	
-		lmiterm([-5 1 1  lamda21_11],1/2,1,'s');
-		lmiterm([-5 1 2  lamda21_12],1/2,1);
-		lmiterm([-5 1 2 -lamda21_21],1/2,1);
-		lmiterm([-5 2 1  lamda21_21],1/2,1);
-		lmiterm([-5 2 1 -lamda21_12],1/2,1);
-		lmiterm([-5 2 2  lamda21_22],1/2,1,'s');
+		% lmiterm([ 4 1 1  V1],A2',4,'s');
+		% lmiterm([ 4 1 1  E1],A1',-A2,'s');
+		% lmiterm([ 4 1 1  E2],A1',-2,'s');
+		% lmiterm([ 4 1 2 -E2],1,1);
+		% lmiterm([ 4 2 1  E2],1,1);
+		% lmiterm([ 4 2 2  E1],1,1/2);	
+		% lmiterm([-4 1 1  lamda12_11],1/2,1,'s');
+		% lmiterm([-4 1 2  lamda12_12],1/2,1);
+		% lmiterm([-4 1 2 -lamda12_21],1/2,1);
+		% lmiterm([-4 2 1  lamda12_21],1/2,1);
+		% lmiterm([-4 2 1 -lamda12_12],1/2,1);
+		% lmiterm([-4 2 2  lamda12_22],1/2,1,'s');
 
 
-		
-		lmiterm([ 6 1 1  V1],A1',4,'s');
-		lmiterm([ 6 1 1  E1],A1',-A1,'s');
-		lmiterm([ 6 1 1  E2],A1',-2,'s');		
-		lmiterm([ 6 1 2 -E2],1,1);		
-		lmiterm([ 6 2 1  E2],1,1);		
-		lmiterm([ 6 2 2  E1],1,1/2);
-		
-		lmiterm([ 6 3 3  V2],A2',4,'s');
-		lmiterm([ 6 3 3  E1],A2',-A2,'s');
-		lmiterm([ 6 3 3  E2],A2',-2,'s');		
-		lmiterm([ 6 3 4 -E2],1,1);	
-		lmiterm([ 6 4 3  E2],1,1);
-		lmiterm([ 6 4 4  E1],1,1/2);
+		% lmiterm([ 5 1 1  V2],A1',4,'s');
+		% lmiterm([ 5 1 1  E1],A2',-A1,'s');
+		% lmiterm([ 5 1 1  E2],A2',-2,'s');
+		% lmiterm([ 5 1 2 -E2],1,1);
+		% lmiterm([ 5 2 1  E2],1,1);
+		% lmiterm([ 5 2 2  E1],1,1/2);	
+		% lmiterm([-5 1 1  lamda21_11],1/2,1,'s');
+		% lmiterm([-5 1 2  lamda21_12],1/2,1);
+		% lmiterm([-5 1 2 -lamda21_21],1/2,1);
+		% lmiterm([-5 2 1  lamda21_21],1/2,1);
+		% lmiterm([-5 2 1 -lamda21_12],1/2,1);
+		% lmiterm([-5 2 2  lamda21_22],1/2,1,'s');
+
 
 		
-		lmiterm([6 1 3  lamda12_11],1/2,1);
-		lmiterm([6 1 3 -lamda21_11],1/2,1);
-		lmiterm([6 1 4  lamda12_12],1/2,1);		
-		lmiterm([6 1 4 -lamda21_21],1/2,1);
-		lmiterm([6 2 3  lamda12_21],1/2,1);
-		lmiterm([6 2 3 -lamda21_12],1/2,1);
-		lmiterm([6 2 4  lamda12_22],1/2,1);
-		lmiterm([6 2 4 -lamda21_22],1/2,1);
+		% lmiterm([ 6 1 1  V1],A1',4,'s');
+		% lmiterm([ 6 1 1  E1],A1',-A1,'s');
+		% lmiterm([ 6 1 1  E2],A1',-2,'s');		
+		% lmiterm([ 6 1 2 -E2],1,1);		
+		% lmiterm([ 6 2 1  E2],1,1);		
+		% lmiterm([ 6 2 2  E1],1,1/2);
+		
+		% lmiterm([ 6 3 3  V2],A2',4,'s');
+		% lmiterm([ 6 3 3  E1],A2',-A2,'s');
+		% lmiterm([ 6 3 3  E2],A2',-2,'s');		
+		% lmiterm([ 6 3 4 -E2],1,1);	
+		% lmiterm([ 6 4 3  E2],1,1);
+		% lmiterm([ 6 4 4  E1],1,1/2);
 
-		lmiterm([6 3 1  lamda21_11],1/2,1)
-		lmiterm([6 3 1 -lamda12_11],1/2,1)
-		lmiterm([6 3 2  lamda21_12],1/2,1)
-		lmiterm([6 3 2 -lamda12_21],1/2,1)
-		lmiterm([6 4 1  lamda21_21],1/2,1)
-		lmiterm([6 4 1 -lamda12_12],1/2,1)		
-		lmiterm([6 4 2  lamda21_22],1/2,1)
-		lmiterm([6 4 2 -lamda12_22],1/2,1)
+		
+		% lmiterm([6 1 3  lamda12_11],1/2,1);
+		% lmiterm([6 1 3 -lamda21_11],1/2,1);
+		% lmiterm([6 1 4  lamda12_12],1/2,1);		
+		% lmiterm([6 1 4 -lamda21_21],1/2,1);
+		% lmiterm([6 2 3  lamda12_21],1/2,1);
+		% lmiterm([6 2 3 -lamda21_12],1/2,1);
+		% lmiterm([6 2 4  lamda12_22],1/2,1);
+		% lmiterm([6 2 4 -lamda21_22],1/2,1);
+
+		% lmiterm([6 3 1  lamda21_11],1/2,1)
+		% lmiterm([6 3 1 -lamda12_11],1/2,1)
+		% lmiterm([6 3 2  lamda21_12],1/2,1)
+		% lmiterm([6 3 2 -lamda12_21],1/2,1)
+		% lmiterm([6 4 1  lamda21_21],1/2,1)
+		% lmiterm([6 4 1 -lamda12_12],1/2,1)		
+		% lmiterm([6 4 2  lamda21_22],1/2,1)
+		% lmiterm([6 4 2 -lamda12_22],1/2,1)
 				
-		lmisys=getlmis;
-		[tmin,xfeas]=feasp(lmisys,options,target);
+		% lmisys=getlmis;
+		% [tmin,xfeas]=feasp(lmisys,options,target);
 		
-		if tmin<0
-			param5 = [param5 [alpha beta]'];
-			count5 = count5 + 1;
-			hold on;
-		end
+		% if tmin<0
+			% param5 = [param5 [alpha beta]'];
+			% count5 = count5 + 1;
+			% hold on;
+		% end
 
-		end
-	end
+		% end
+	% end
 
 	
-	[m n] = size(param5);
-	param5 = param5(:,2:n);
-	timestr = datestr(now,30);
-	fid = fopen([timestr,'_param5.txt'],'w');			
-	fprintf(fid,'%6.2f\t %6.2f\n',param5);
-	fclose(fid);
-	plot(param5(1,:),param5(2,:),'s','markersize',6);
-	hold on;
+	% [m n] = size(param5);
+	% param5 = param5(:,2:n);
+	% timestr = datestr(now,30);
+	% fid = fopen([timestr,'_param5.txt'],'w');			
+	% fprintf(fid,'%6.2f\t %6.2f\n',param5);
+	% fclose(fid);
+	% plot(param5(1,:),param5(2,:),'s','markersize',6);
+	% hold on;
 
 	
 
@@ -727,6 +730,89 @@ function cnt = exa1()
 	% plot(param7(1,:),param7(2,:),'s','markersize',6);
 	% hold on;
 	
+
+
+	for beta = -30:step:10				% for beta = -0.6:0.05:0.2
+		for alpha =  -70:step:20		% for alpha =  -2:0.05:1
+
+		if(rate*alpha-beta>gamma)
+			continue;
+		end
+		
+		A1=[-2 alpha;19 beta];
+		A2=[-4 alpha;-1 beta];
+		
+		setlmis([]);
+		
+		V1=lmivar(3,[1 2;3 4]);			% V1=[X1 X2;X2 X3]
+		V2=lmivar(3,[5 2;3 4]);			% V2=[X4 X2;X2 X3]
+		E1=lmivar(3,5+[1 2;2 3]);
+		E2=lmivar(3,8+[1 2;3 4]);
+		 W=lmivar(1,[2 1]);				% W
+
+		
+		lmiterm([-1 1 1 V1],1/2,1,'s');		% 0<V1:V1
+	
+		lmiterm([-2 1 1 V2],1/2,1,'s');		% 0<V2:V2 
+
+		lmiterm([ 3 1 1 E1],1,1);
+		lmiterm([-4 1 1  W],1,1);
+		
+		lmiterm([ 5 1 1 -V1],4,A1,'s');
+		lmiterm([ 5 1 1  E1],-A1',A1,'s');
+		lmiterm([ 5 1 1 -E2],-2,A1,'s');
+		lmiterm([ 5 1 1  W],1,1);
+		lmiterm([ 5 1 2 -E2],1,1);
+		lmiterm([ 5 2 1  E2],1,1);
+		lmiterm([ 5 2 2  E1],1,1/2);
+
+		lmiterm([ 6 1 1 -V2],4,A2,'s');
+		lmiterm([ 6 1 1  E1],-A2',A2,'s');
+		lmiterm([ 6 1 1 -E2],-2,A2,'s');
+		lmiterm([ 6 1 1   W],1,1);
+		lmiterm([ 6 1 2 -E2],1,1);
+		lmiterm([ 6 2 1  E2],1,1);
+		lmiterm([ 6 2 2  E1],1,1/2);
+
+		lmiterm([ 7 1 1 -V1],4,A2,'s');
+		lmiterm([ 7 1 1  E1],-A1',A2,'s');
+		lmiterm([ 7 1 1 -E2],-2,A1,'s');
+		lmiterm([ 7 1 1   W],-1,1);
+		lmiterm([ 7 1 2 -E2],1,1);
+		lmiterm([ 7 2 1  E2],1,1);
+		lmiterm([ 7 2 2  E1],1,1/2);
+
+		lmiterm([ 8 1 1 -V2],4,A2,'s');
+		lmiterm([ 8 1 1  E1],-A2',A1,'s');
+		lmiterm([ 8 1 1 -E2],-2,A2,'s');
+		lmiterm([ 8 1 1   W],-1,1);
+		lmiterm([ 8 1 2 -E2],1,1);
+		lmiterm([ 8 2 1  E2],1,1);
+		lmiterm([ 8 2 2  E1],1,1/2);
+		
+		lmisys=getlmis;
+		[tmin,xfeas]=feasp(lmisys,options,target);
+		
+		if tmin<0
+			param8 = [param8 [alpha beta]'];
+			count8 = count8 + 1;
+			hold on;
+		end
+
+		end
+	end
+
+
+
+	[m n] = size(param8);
+	param8 = param8(:,2:n);
+	timestr = datestr(now,30);
+	fid = fopen([timestr,'_param8.txt'],'w');			
+	fprintf(fid,'%6.2f\t %6.2f\n',param8);
+	fclose(fid);
+	plot(param8(1,:),param8(2,:),'s','markersize',6);
+	hold on;
+
 	
 		
 		
@@ -886,6 +972,6 @@ function cnt = exa1()
 		% end
 	% end
 	
-	cnt = [count0 count1 count2 count3 count4 count5 count6 count7];
+	cnt = [count0 count1 count2 count3 count4 count5 count6 count7 count8];
 end
 
